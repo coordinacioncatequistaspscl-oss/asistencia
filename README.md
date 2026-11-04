@@ -82,7 +82,7 @@
         <label for="otroTexto">¿Qué estás haciendo?</label>
         <input type="text" id="otroTexto" placeholder="ej. catequista, acompañante, etc.">
       </div>
-      <button type="submit">Registrar Llegada 😼</button>
+      <button type="submit" id="btnGeneral">Registrar Llegada 😼</button>
     </form>
     <form id="formCatequista" class="hidden">
       <div class="form-group">
@@ -101,12 +101,12 @@
         </div>
       </div>
       <button type="button" class="btn-add" onclick="agregarFilaNino()">+ Agregar otro niño</button>
-      <button type="submit">Guardar Asistencia de Grupo 😼</button>
+      <button type="submit" id="btnCatequista">Guardar Asistencia de Grupo 😼</button>
     </form>
     <div id="mensaje" class="status-msg"></div>
   </div>
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzszA6NNGfCUV8FoF4jM3jcy8xgAFCTctoWblOguIcUvWMVYHEugKXYehC2QrQBEpD/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNtvpcyZBUTYa-85EAiQQsjsz01ZzrKKgJzJ5--t7UF93OKrWFAFwngJMb_lR16fUg/exec";
     function actualizarReloj() {
       const ahora = new Date();
       document.getElementById('lblFecha').textContent = ahora.toLocaleDateString();
@@ -154,7 +154,9 @@
     }
     document.getElementById('formGeneral').addEventListener('submit', async (e) => {
       e.preventDefault();
-      enviarDatos({
+      const btn = document.getElementById('btnGeneral');
+      btn.disabled = true;
+      await enviarDatos({
         tipo: 'individual',
         nombreCompleto: `${document.getElementById('nombre').value.trim()} ${document.getElementById('apellido').value.trim()}`,
         motivo: selectSacramento.value === 'Otro' ? otroTextoInput.value.trim() : selectSacramento.value
@@ -162,9 +164,12 @@
         document.getElementById('formGeneral').reset();
         campoOtroGrupo.classList.add('hidden');
       });
+      btn.disabled = false;
     });
     document.getElementById('formCatequista').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = document.getElementById('btnCatequista');
+      btn.disabled = true;
       const ninosInputs = document.querySelectorAll('.nino-row');
       const lista = [];
       ninosInputs.forEach(row => {
@@ -172,7 +177,7 @@
         const asistio = row.querySelector('.check-asistencia').checked;
         if(nombre) lista.push({ nombre, asistio });
       });
-      enviarDatos({
+      await enviarDatos({
         tipo: 'grupo',
         catequista: document.getElementById('nombreCatequista').value.trim(),
         nombreGrupo: document.getElementById('nombreGrupo').value.trim(),
@@ -186,6 +191,7 @@
           </div>
         `;
       });
+      btn.disabled = false;
     });
     async function enviarDatos(payload, callbackExito) {
       const mensaje = document.getElementById('mensaje');
@@ -208,8 +214,6 @@
       } catch (err) {
         mensaje.className = "status-msg error";
         mensaje.innerText = "Error al conectar con el servidor.";
-      } finally {
-        btn.disabled = false;
       }
     }
   </script>
