@@ -34,6 +34,7 @@
     .status-msg { margin-top: 16px; padding: 12px; border-radius: 10px; font-size: 0.85rem; text-align: center; font-weight: 500; display: none; white-space: pre-line; }
     .status-msg.success { display: block; background-color: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
     .status-msg.loading { display: block; background-color: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .status-msg.error { display: block; background-color: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
   </style>
 </head>
 <body>
@@ -59,14 +60,13 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNtvpcyZBUTYa-85EAiQQsjsz01ZzrKKgJzJ5--t7UF93OKrWFAFwngJMb_lR16fUg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtTjNByorw8uznetHg8rJfHZFx_DGVWEtSrcjovlYoF-Vy8hgvYBEt_mdq_jv59YNi/exec";
     let estudiantesData = [];
 
     const hoy = new Date();
     const fechaFormateada = `${String(hoy.getDate()).padStart(2, '0')}/${String(hoy.getMonth() + 1).padStart(2, '0')}/${hoy.getFullYear()}`;
     document.getElementById('lblFecha').textContent = fechaFormateada;
 
-    // Cargar estudiantes desde el Google Sheet al iniciar
     async function cargarEstudiantes() {
       try {
         const response = await fetch(SCRIPT_URL);
